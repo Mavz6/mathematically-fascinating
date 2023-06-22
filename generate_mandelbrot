@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def generate_mandelbrot(width, height, xmin, xmax, ymin, ymax, max_iter):
+    x = np.linspace(xmin, xmax, width)
+    y = np.linspace(ymin, ymax, height)
+    c = x[:,np.newaxis] + 1j * y[np.newaxis,:]
+    z = np.zeros_like(c)
+    img = np.zeros((width, height))
+
+    for i in range(max_iter):
+        mask = np.abs(z) < 10
+        z[mask] = z[mask] * z[mask] + c[mask]
+        img += np.log(i + 1) * mask
+
+    return -img.T
+
+if __name__ == "__main__":
+    width = 800
+    height = 800
+    xmin, xmax = -2.5, 1
+    ymin, ymax = -1.5, 1.5
+    max_iter = 256
+
+    mandelbrot_img = generate_mandelbrot(width, height, xmin, xmax, ymin, ymax, max_iter)
+
+    plt.figure(figsize=(8, 8))
+    plt.imshow(mandelbrot_img, cmap='hot', extent=(xmin, xmax, ymin, ymax))
+    plt.title("Mandelbrot Set")
+    plt.xlabel("Re")
+    plt.ylabel("Im")
+    plt.colorbar()
+    plt.savefig("mandelbrot.png")
+    plt.show()
